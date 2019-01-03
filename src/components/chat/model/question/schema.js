@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const possibleAnswerSchema = require('../answer/answer.schema');
+const possibleAnswerSchema = require('../answer/schema');
 
 
 const questionSchema = new mongoose.Schema({

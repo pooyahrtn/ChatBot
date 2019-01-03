@@ -1,11 +1,5 @@
 const mongoose = require('mongoose');
-
-const PossibleAnswerBodyTypes = {
-    image: 'im',
-    text: 'te',
-    voice: 'vo',
-    video: 'vi',
-};
+const { PossibleAnswerBodyTypes } = require('./constants');
 
 const possibleAnswerSchema = new mongoose.Schema({
     hint: {

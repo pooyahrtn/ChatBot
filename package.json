@@ -38,6 +38,8 @@
     "express-validation": "^1.0.2",
     "helmet": "^3.15.0",
     "joi": "^14.3.1",
+    "joi-objectid": "^2.0.0",
+    "lodash": "^4.17.11",
     "mongoose": "^5.4.1",
     "morgan": "^1.9.1",
     "pm2": "^3.0.0",

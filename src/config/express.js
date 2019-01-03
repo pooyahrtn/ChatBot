@@ -13,9 +13,6 @@ const error = require('./error');
 */
 const app = express();
 
-// *** SO IMPORTANT *** this will handle promises on routers 
-require('express-async-errors');
-
 // request logging. dev: console | production: file
 app.use(morgan(logs));
 

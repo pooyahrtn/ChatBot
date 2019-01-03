@@ -1,2 +1,2 @@
-exports.Question = require('./question').Question;
-exports.Converstation = require('./converstation').Converstation;
+exports.questions = require('./question');
+exports.converstations = require('./converstation');

@@ -1,11 +1,8 @@
 const mongoose = require('mongoose');
 
-const possibleAnswerSchema = require('../answer/answer.schema');
+const possibleAnswerSchema = require('../answer/schema');
+const { ChatKinds } = require('./constants');
 
-const ChatKinds = {
-    from_user: 'us',
-    from_server: 'se',
-};
 
 const chatSchema = new mongoose.Schema({
     kind: {
@@ -14,7 +11,7 @@ const chatSchema = new mongoose.Schema({
         required: true,
         maxlength: 2,
     },
-    qustion: {
+    question: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Question',
     },
@@ -37,3 +34,4 @@ const converstationSchema = new mongoose.Schema({
 });
 
 module.exports = converstationSchema;
+exports.ChatKinds = ChatKinds;
