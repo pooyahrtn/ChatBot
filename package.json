@@ -1,0 +1,61 @@
+{
+  "name": "peeyade",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.js",
+  "engines": {
+    "node": ">=8",
+    "yarn": "*"
+  },
+  "scripts": {
+    "precommit": "yarn lint",
+    "prestart": "yarn docs",
+    "start": "cross-env NODE_ENV=production pm2 start ./src/index.js",
+    "dev": "nodemon ./src/index.js",
+    "lint": "eslint ./src/ --ignore-path .gitignore --ignore-pattern internals/scripts",
+    "lint:fix": "yarn lint --fix",
+    "lint:watch": "yarn lint --watch",
+    "test": "cross-env NODE_ENV=test nyc --reporter=html --reporter=text mocha --timeout 20000 --recursive src/api/tests",
+    "test:unit": "cross-env NODE_ENV=test mocha src/api/tests/unit",
+    "test:integration": "cross-env NODE_ENV=test mocha --timeout 20000 src/api/tests/integration",
+    "test:watch": "cross-env NODE_ENV=test mocha --watch src/api/tests/unit",
+    "validate": "yarn lint && yarn test",
+    "postpublish": "git push --tags",
+    "deploy": "sh ./deploy.sh",
+    "docs": "apidoc -i src -o docs",
+    "postdocs": "opn docs/index.html",
+    "docker:start": "cross-env NODE_ENV=production pm2-docker start ./src/index.js",
+    "docker:prod": "docker-compose -f docker-compose.yml -f docker-compose.prod.yml up",
+    "docker:dev": "docker-compose -f docker-compose.yml -f docker-compose.dev.yml up",
+    "docker:test": "docker-compose -f docker-compose.yml -f docker-compose.test.yml up --abort-on-container-exit"
+  },
+  "author": "Pooya",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv-safe": "^6.0.0",
+    "express": "^4.16.4",
+    "express-async-errors": "^3.1.1",
+    "express-validation": "^1.0.2",
+    "helmet": "^3.15.0",
+    "joi": "^14.3.1",
+    "mongoose": "^5.4.1",
+    "morgan": "^1.9.1",
+    "pm2": "^3.0.0",
+    "winston": "^3.1.0"
+  },
+  "devDependencies": {
+    "chai": "^4.1.0",
+    "chai-as-promised": "^7.1.1",
+    "eslint": "^5.3.0",
+    "eslint-config-airbnb-base": "^12.0.1",
+    "eslint-plugin-import": "^2.2.0",
+    "husky": "^0.14.3",
+    "mocha": "^5.2.0",
+    "nodemon": "^1.11.0",
+    "nyc": "^12.0.2",
+    "opn-cli": "^3.1.0",
+    "sinon": "^6.0.0",
+    "sinon-chai": "^3.0.0",
+    "supertest": "^3.0.0"
+  }
+}
