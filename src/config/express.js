@@ -1,3 +1,4 @@
+
 const express = require('express');
 const morgan = require('morgan');
 const helmet = require('helmet');
@@ -12,7 +13,7 @@ const error = require('./error');
 */
 const app = express();
 
-// *** SO IMPORTANT *** this will handle promises on routers. 
+// *** SO IMPORTANT *** this will handle promises on routers 
 require('express-async-errors');
 
 // request logging. dev: console | production: file
@@ -25,7 +26,7 @@ app.use(helmet());
 app.use(routes);
 
 if (env !== 'development') {
-    app.use(error)
+    app.use(error);
 }
 
 module.exports = app;
