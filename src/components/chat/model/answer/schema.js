@@ -1,29 +1,27 @@
 const mongoose = require('mongoose');
 const { PossibleAnswerBodyTypes } = require('./constants');
+const _ = require('lodash');
 
 const possibleAnswerSchema = new mongoose.Schema({
     hint: {
         type: String,
+        maxlength: 100,
     },
     body_type: {
         type: String,
         maxlength: 2,
-        enum: [PossibleAnswerBodyTypes.text,
-        PossibleAnswerBodyTypes.video,
-        PossibleAnswerBodyTypes.voice,
-        PossibleAnswerBodyTypes.image,
-        ],
+        enum: _.values(PossibleAnswerBodyTypes),
         required: true,
     },
     body: {
         type: String,
         maxlength: 400,
     },
-    isOption: {
+    is_option: {
         type: Boolean,
         required: true,
     },
-    nextQuestion: {
+    next_question: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
         ref: 'Question',

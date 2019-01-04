@@ -1,22 +1,29 @@
 const mongoose = require('mongoose');
+const { ChatSenders } = require('./constants');
+const _ = require('lodash');
+const { PossibleAnswerBodyTypes } = require('../answer/constants');
 
-const possibleAnswerSchema = require('../answer/schema');
-const { ChatKinds } = require('./constants');
-
+const messageSchema = new mongoose.Schema({
+    message_type: {
+        type: String,
+        enum: _.values(PossibleAnswerBodyTypes),
+        maxlength: 2,
+    },
+    body: {
+        type: String,
+        maxlength: 400,
+    },
+});
 
 const chatSchema = new mongoose.Schema({
-    kind: {
+    sender: {
         type: String,
-        enum: [ChatKinds.from_server, ChatKinds.from_user],
+        enum: _.values(ChatSenders),
         required: true,
         maxlength: 2,
     },
-    question: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Question',
-    },
-    answer: {
-        type: possibleAnswerSchema,
+    message: {
+        type: messageSchema,
     },
     time: {
         type: Date,
@@ -34,4 +41,4 @@ const converstationSchema = new mongoose.Schema({
 });
 
 module.exports = converstationSchema;
-exports.ChatKinds = ChatKinds;
+

@@ -1,7 +1,7 @@
 const _ = require('lodash');
 
 function answerSerializer(answer) {
-    return _.pick(answer, ['hint', 'body_type', 'body', 'isOption']);
+    return _.pick(answer, ['hint', 'body_type', 'body', 'is_option', '_id']);
 }
 
 function questionSerializer(question) {
