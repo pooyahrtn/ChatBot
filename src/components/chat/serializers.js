@@ -12,5 +12,9 @@ function questionSerializer(question) {
     };
 }
 
+// function converstationSerializer(converstation) {
+//     return '';
+// }
+
 exports.answerSerializer = answerSerializer;
 exports.questionSerializer = questionSerializer;

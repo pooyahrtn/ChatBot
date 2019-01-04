@@ -28,10 +28,13 @@ router.post('/answer/:session_id', validate(validators.answer), async (req, res)
     if (!converstation) {
         return res.status(httpStatus.BAD_REQUEST).send('not valid converstation');
     }
-    const question = await questions.Question.findById(req.body.question_id);
-    if (!question) {
-        return res.status(httpStatus.BAD_REQUEST).send('not valid question');
+    if (converstation.is_ended) {
+        return res.status(httpStatus.BAD_REQUEST).send('converstation is ended');
     }
+    const lastQuestionId = converstation.chats[converstation.chats.length - 1];
+    // the question is the last chat in chats
+    const question = await questions.Question.findById(lastQuestionId);
+
     const answer = questions.methods.findAnswer(question, req.body.answer_id);
     if (!answer) {
         return res.status(httpStatus.BAD_REQUEST).send('not valid answer');
@@ -51,12 +54,26 @@ router.post('/answer/:session_id', validate(validators.answer), async (req, res)
         // it's just an option, so we are good with default answer
         converstations.methods.addAnswer(converstation, answer);
     }
-    await converstation.save();
+
     // now give me next question
     const nextQuestion = await questions.Question.findById(answer.next_question);
-    res.send(nextQuestion);
+
+    if (!nextQuestion) {
+        // so converstation is ended
+        converstation.is_ended = true;
+    } else {
+        // append it to the chats
+        converstations.methods.addQuestion(converstation, nextQuestion);
+    }
+
+    await converstation.save();
+    return res.send(nextQuestion);
 });
 
+router.get('/converstation/:session_id', validate(validators.showConverstation), async (req, res) => {
+    const converstation = await converstations.Converstation.findById(req.params.session_id);
+    res.send(converstation);
+});
 
 // ################ FOR ADMIN #####################
 /** 

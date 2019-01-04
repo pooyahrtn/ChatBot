@@ -7,8 +7,8 @@ exports.addQuestion = (instance, question) => {
         message: {
             type: PossibleAnswerBodyTypes.text,
             body: question.text,
-            _id: question._id,
         },
+        _id: question._id,
     };
     instance.chats.push(chat);
     return instance;
@@ -20,8 +20,8 @@ exports.addAnswer = (instance, answer) => {
         message: {
             type: answer.body_type,
             body: answer.body,
-            _id: answer._id,
         },
+        _id: answer._id,
     };
     instance.chats.push(chat);
     return instance;

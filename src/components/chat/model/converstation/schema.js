@@ -29,6 +29,7 @@ const chatSchema = new mongoose.Schema({
         type: Date,
         default: Date.now,
     },
+   
 });
 
 const converstationSchema = new mongoose.Schema({
@@ -36,6 +37,10 @@ const converstationSchema = new mongoose.Schema({
     start_time: {
         type: Date,
         default: Date.now,
+    },
+    is_ended: {
+        type: Boolean,
+        default: false,
     },
 
 });

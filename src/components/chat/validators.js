@@ -25,8 +25,12 @@ module.exports = {
         },
         body: {
             answer_id: Joi.objectId().required(),
-            question_id: Joi.objectId().required(),
             body: Joi.string(),
+        },
+    },
+    showConverstation: {
+        params: {
+            session_id: Joi.objectId().required(),
         },
     },
 };
