@@ -74,23 +74,23 @@
     [converstation/:session_id]().
     ```javascript
         // Response
-        {
-                "is_ended": Boolean, // If converstation is ended.
-                "_id": ObjectId,     // Converstation id
-                "chats": [
-                    {
-                        "time": Date,
-                        "_id": ObjectID , 
-                        "sender": String, //enum('us','se') if it's from server or user
-                        "message": {
-                            "_id": ObjectID,
-                            "body": String,         // text or url of the content
-                            "message_type" : String // type of message 
-                        }
-                    },
-                ],
-                "start_time": "2019-01-04T12:28:49.227Z",
-        }
+    {
+            "is_ended": Boolean, // If converstation is ended.
+            "_id": ObjectId,     // Converstation id
+            "chats": [
+                {
+                    "time": Date,
+                    "_id": ObjectID , 
+                    "sender": String, //enum('us','se') if it's from server or user
+                    "message": {
+                        "_id": ObjectID,
+                        "body": String,         // text or url of the content
+                        "message_type" : String // type of message 
+                    }
+                },
+            ],
+            "start_time": "2019-01-04T12:28:49.227Z",
+    }
     ```
     <br>
 
