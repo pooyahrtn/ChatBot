@@ -9,6 +9,17 @@ const { questions, converstations } = require('./model');
 
 const router = express.Router();
 
+/**
+ * @api {post} /start StartConverstation
+ * @apiDescription Start a new converstation
+ * @apiVersion 1.0.0
+ * @apiName StartConverstation
+ * @apiGroup Chat
+ * @apiPermission public
+ * @apiSuccess (OK 200) {ObjectId}  session                    Session Id, which used next for chat
+ * @apiSuccess (OK 200) {String}    question.text              Question Text
+ * @apiSuccess (OK 200) {String}    question.expected_answers.body_type     Expected answer type
+ */
 router.post('/start', async (_req, res) => {
     const question = await questions.methods.greeting();
     const conv = new converstations.Converstation();
@@ -22,6 +33,20 @@ router.post('/start', async (_req, res) => {
     });
 });
 
+
+/**
+ * @api {post} /answer/:session_id Answer to last Question
+ * @apiDescription Start a new converstation
+ * @apiVersion 1.0.0
+ * @apiName Answer Question
+ * @apiGroup Chat
+ * @apiPermission public
+ * @apiSuccess (OK 200) {Question} ... return next question
+ * 
+ * @apiError (BadRequest 400)    BadRequest     If converstation id that mentioned is invalid
+ * @apiError (BadRequest 400)    BadRequest     If converstaion is ended
+ * @apiError (BadRequest 400)    BadRequest     If answer type is not optional, but body is empty
+ */
 router.post('/answer/:session_id', validate(validators.answer), async (req, res) => {
     // lets find the converstation first
     const converstation = await converstations.Converstation.findById(req.params.session_id);
@@ -36,6 +61,7 @@ router.post('/answer/:session_id', validate(validators.answer), async (req, res)
     const question = await questions.Question.findById(lastQuestionId);
 
     const answer = questions.methods.findAnswer(question, req.body.answer_id);
+    
     if (!answer) {
         return res.status(httpStatus.BAD_REQUEST).send('not valid answer');
     }
@@ -46,7 +72,7 @@ router.post('/answer/:session_id', validate(validators.answer), async (req, res)
         }
         // so we are good. lets just create a clone of answer and add it to the converstation.
         const userAnswer = {
-            ...answer,
+            ...answer.toObject(),
             body: req.body.body,
         };
         converstations.methods.addAnswer(converstation, userAnswer);
@@ -72,7 +98,10 @@ router.post('/answer/:session_id', validate(validators.answer), async (req, res)
 
 router.get('/converstation/:session_id', validate(validators.showConverstation), async (req, res) => {
     const converstation = await converstations.Converstation.findById(req.params.session_id);
-    res.send(converstation);
+    if (!converstation) {
+        return res.status(httpStatus.NOT_FOUND).send();
+    }
+    return res.send(converstation);
 });
 
 // ################ FOR ADMIN #####################
@@ -90,13 +119,20 @@ router.post('/add_question', validate(validators.addQuestion), async (req, res) 
 router.post('/add_answer', validate(validators.addAnswer), async (req, res) => {
     const question = await questions.Question.findById(req.body.question_id);
     if (!question) {
-        res.status(httpStatus.BAD_REQUEST).send('not valid question');
-    } else {
-        const answer = _.pick(req.body, ['body_type', 'body', 'is_option', 'next_question', 'hint']);
-        questions.methods.addPossibleAnswer(question, answer);
-        const savedQuestion = await question.save();
-        res.send(savedQuestion);
+        return res.status(httpStatus.BAD_REQUEST).send('not valid question');
     }
+    const answer = _.pick(req.body, ['body_type', 'body', 'is_option', 'next_question', 'hint']);
+    if (answer.is_option && !answer.body) {
+        return res.status(400).send('body should not be null');
+    }
+    questions.methods.addPossibleAnswer(question, answer);
+    const savedQuestion = await question.save();
+    return res.send(savedQuestion);
+});
+
+router.get('/all_questions', async (_req, res) => {
+    const results = await questions.Question.find({});
+    res.send(results);
 });
 
 module.exports = router;

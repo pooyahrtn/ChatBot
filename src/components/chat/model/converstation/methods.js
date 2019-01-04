@@ -1,11 +1,12 @@
 const { ChatSenders } = require('./constants');
 const { PossibleAnswerBodyTypes } = require('../answer/constants');
 
+
 exports.addQuestion = (instance, question) => {
     const chat = {
         sender: ChatSenders.from_server,
         message: {
-            type: PossibleAnswerBodyTypes.text,
+            message_type: PossibleAnswerBodyTypes.text,
             body: question.text,
         },
         _id: question._id,
@@ -17,9 +18,10 @@ exports.addQuestion = (instance, question) => {
 exports.addAnswer = (instance, answer) => {
     const chat = {
         sender: ChatSenders.from_user,
+        
         message: {
-            type: answer.body_type,
             body: answer.body,
+            message_type: answer.body_type,
         },
         _id: answer._id,
     };
