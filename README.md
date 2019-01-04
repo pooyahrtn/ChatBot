@@ -5,25 +5,25 @@
 ## Populate Database
 
 1. **Add questions**: </br>
-    Questions are things come from server. they can be greeting, or the end converstation.</br>
+    Questions are things come from the server. they can be a greeting message, or the end converstation.</br>
     by POST [/add_quesition]() you can add this converstations.
     later we will add possible answers to it.
     post params are 
     ```javascript 
     {
-        "text": "text you wanna ask, or tell.", // min_length=10 *required*
-        "is_starter": "if it's greeting"
+        "text": String, // REQUIRED min_length=10 the question, or message you wanna show
+        "is_starter": Boolean
     }
     ```
 
 2. **Add possible answers**: </br>
    
-    After you entered appropriate questions, you should add possible answers.<br>
-    Each possible should has a specific type, which can be image, text, voice or video.<br>
-    If answer type is an option, you should pass **is_option** proprty to true, and backend expect you
+    After you entered appropriate questions, you should add the possible answers.<br>
+    Each possible answer should has a specific type, which can be an image, text, voice or video.<br>
+    If the answer type is an option, you should pass **is_option** proprty to true, and backend expect you
     to pass **body** parameter.<br>
     **For not text** types, body is the url of the content you wanna show to user.<br>
-    **IMPORTANT**: if you not pass the next_question, converstaion will be ended.
+    **IMPORTANT**: if you not pass the next_question, the converstaion will be ended.
      POST [/add_answer]()
     ```javascript 
     {
@@ -94,11 +94,24 @@
     ```
     <br>
 
+# About The Architecture
+We have two main models:
+* **Question**: Messages send from server, are stored here. Each question has a list of **possible answers**.
+</br> In order to answer a question, user should return a "possible answer" of that question.
+</br> **Possible Answer** can be an option, so the body is defined by the server, and can be text or url of some medias content.
+* **Converstation**: They created when user want to start new converstation, and has **chats** property to store that converstation messages.
+</br> **chat** object contains a *sender* property shows, if message is from 'server' or 'user', and *body* property,
+shows message content. In order to track questions and answers later, I stored the original question or answer _id as chat _id.
+#### Assumption
+I assumed converstations length are not great, so I stored them into Converstation object.
+
+#### A Problem
+Current implementation, supports only one option as an answer. The problem is, for example if you have n options, to answer, to direct the user to next question, we should consider 2<sup>n</sup> - 1 conditions.
 
 
 # About The Code
 ## Folder Structure 
-  Folder Structure inspired from Django framework. I tried to [seperate logics by components](https://github.com/i0natan/nodebestpractices/blob/master/sections/projectstructre/breakintcomponents.md).<br>
+  Folder Structure is inspired of Django framework. I tried to [seperate logics by components](https://github.com/i0natan/nodebestpractices/blob/master/sections/projectstructre/breakintcomponents.md).<br>
 
 ### Component
 Each component is a role in our application. like User, Chat, Notification or ...
