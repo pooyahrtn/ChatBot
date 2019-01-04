@@ -1,7 +1,7 @@
 # How Can I Help You? 
 ## An intelligent chat bot, written for Peeyade
 
-# Procedure
+# How To Use
 ## Populate Database
 
 1. **Add questions**: </br>
@@ -72,24 +72,96 @@
 3. **Show The Whole Converstation** :<br>
     Client always can see the converstation, made with server by calling 
     [converstation/:session_id]().
-      ```javascript
-      // Response
-    {
-            "is_ended": Boolean, // If converstation is ended.
-            "_id": ObjectId,     // Converstation id
-            "chats": [
-                {
-                    "time": Date,
-                    "_id": ObjectID , 
-                    "sender": String, //enum('us','se') if it's from server or user
-                    "message": {
-                        "_id": ObjectID,
-                        "body": String,         // text or url of the content
-                        "message_type" : String // type of message 
-                    }
-                },
-            ],
-            "start_time": "2019-01-04T12:28:49.227Z",
-    }
+    ```javascript
+        // Response
+        {
+                "is_ended": Boolean, // If converstation is ended.
+                "_id": ObjectId,     // Converstation id
+                "chats": [
+                    {
+                        "time": Date,
+                        "_id": ObjectID , 
+                        "sender": String, //enum('us','se') if it's from server or user
+                        "message": {
+                            "_id": ObjectID,
+                            "body": String,         // text or url of the content
+                            "message_type" : String // type of message 
+                        }
+                    },
+                ],
+                "start_time": "2019-01-04T12:28:49.227Z",
+        }
     ```
+    <br>
 
+
+
+# About The Code
+## Folder Structure 
+  Folder Structure inspired from Django framework. I tried to [seperate logics by components](https://github.com/i0natan/nodebestpractices/blob/master/sections/projectstructre/breakintcomponents.md).<br>
+
+### Component
+Each component is a role in our application. like User, Chat, Notification or ...
+
+#### src/components/chat
+Each component contains: <br>
+* **/model**: where models, schemas and model-methods placed here <br>
+* **/tests**: unit and integrity tests placed here
+* **/serializers**: it can be a folder or a file, used to select fields from object, to show neccessary fields, if whole the object is loaded.
+* **validators.js**: used to validate request params, body, query ...
+* **router.js**: route requests to appropriate controller
+* **/controllers**: I did'nt use for this application, but it's very helpful to seperate controller logis in seperated files, so we have cleaner code.
+
+### src/config
+Here I placed app configs
+* **express.js**: Append plugins and routers here.
+* **router**: Here we add components routers to the app.
+* **vars**: It reads and converts enviroment variables to structured "env" object.
+* **logger**: uses winston and return a logger object to log.
+* **Joi**: just add ObjectID validator to joi
+* **error**: we converts error to a uniform shape.
+* **mongoose**: mongoose configuration
+
+### src/utils
+Where common utils placed here
+
+### src/index.js
+Entry point of app. There is a spectial thing happened here:
+```javacript
+    require('express-async-errors');
+
+    process.on('unhandledRejection', (ex) => {
+        throw ex;
+    });
+```
+Now in if our throw an exception, it will be route to error router. And also we treat unhandled rejections
+like exceptions, to handle all possible errors.
+
+## Special Packages
+* **apidocs**: this package create a beautiful api doc from @api docs we used for our routers.
+
+## Scripts
+
+# Add enviroment variables
+    cp .env.example .env
+# Run Locally
+    yarn dev
+# Test
+    yarn test
+# Documentation
+    yarn docs
+# Docker
+
+    yarn docker:dev
+    or
+    docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
+
+    # run container in production
+    yarn docker:prod
+    or
+    docker-compose -f docker-compose.yml -f docker-compose.prod.yml up
+
+    # run tests
+    yarn docker:test
+    or
+    docker-compose -f docker-compose.yml -f docker-compose.test.yml up

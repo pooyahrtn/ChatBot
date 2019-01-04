@@ -3,7 +3,6 @@ const logger = require('./../config/logger');
 const { mongo, env } = require('./vars');
 
 
-
 // Exit application on error
 mongoose.connection.on('error', (err) => {
   logger.error(`MongoDB connection error: ${err}`);
